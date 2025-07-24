@@ -3,6 +3,7 @@ import CONSTANT from "@config/constant";
 import { HttpError } from "@utils/helperUtil";
 import {
   ILoginServiceResp,
+  IRefreshServiceResp,
   IUser,
   IUserFromTokenDecode,
 } from "@customTypes/authUser.interface";
@@ -60,16 +61,32 @@ export const login = async (
   return { accessToken, refreshToken };
 };
 
-export const refresh = async (refresh_token: string): Promise<void> => {
-  jwt.verify(
-    refresh_token,
-    CONSTANT.JWT_REFRESH_SECRET as string,
-    async (err, decoded) => {
-      if (err || !decoded || typeof decoded !== "object") {
-        // throw new HttpError(err?.message, 403);
-      }
+export const refresh = async (
+  refresh_token: string
+): Promise<IRefreshServiceResp> => {
+  try {
+    const user = jwt.verify(
+      refresh_token,
+      CONSTANT.JWT_REFRESH_SECRET as string
+    ) as IUserFromTokenDecode;
 
-      const user = decoded as IUserFromTokenDecode;
+    const payload = { id: user._id, name: user.name, email: user.email };
+    const newAccessToken = jwt.sign(
+      payload,
+      CONSTANT.JWT_ACCESS_SECRET as string,
+      { expiresIn: "30m" }
+    );
+    const newRefreshToken = jwt.sign(
+      payload,
+      CONSTANT.JWT_REFRESH_SECRET as string,
+      { expiresIn: "7d" }
+    );
+
+    return { newAccessToken, newRefreshToken };
+  } catch (err: any) {
+    if (err instanceof jwt.JsonWebTokenError) {
+      throw new HttpError(err.message, 403);
     }
-  );
+    throw err;
+  }
 };

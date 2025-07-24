@@ -19,3 +19,8 @@ export interface ILoginServiceResp {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface IRefreshServiceResp {
+  newAccessToken: string;
+  newRefreshToken: string;
+}

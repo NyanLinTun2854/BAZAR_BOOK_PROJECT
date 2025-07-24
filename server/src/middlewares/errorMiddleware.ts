@@ -7,7 +7,7 @@ export const errorMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  const status = err.status_code || 500;
+  const status = err?.status_code || 500;
   const message = err.message || "Internal Server Error";
 
   const response = commonResponseSetup(String(status), null, message);

@@ -55,14 +55,15 @@ export const login = async (
 
     const data = {
       access_token: accessToken,
+      refresh_token: refreshToken,
     };
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
+    // res.cookie("refreshToken", refreshToken, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "strict",
+    //   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    // });
 
     response = commonResponseSetup("200", data, "Successfully Login!");
     res.status(200).json(response);
@@ -87,6 +88,18 @@ export const refresh = async (
     }
 
     const { refresh_token } = req.body;
-    await authUserService.refresh(refresh_token);
-  } catch (err: any) {}
+    const { newAccessToken, newRefreshToken } = await authUserService.refresh(
+      refresh_token
+    );
+
+    const data = {
+      new_access_token: newAccessToken,
+      new_refresh_token: newRefreshToken,
+    };
+
+    response = commonResponseSetup("200", data, "Successfully Refresh!");
+    res.status(200).json(response);
+  } catch (err: any) {
+    next(err);
+  }
 };
