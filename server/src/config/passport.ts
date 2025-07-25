@@ -7,7 +7,7 @@ import CONSTANT from "./constant";
 import { PassportStatic } from "passport";
 import { JwtPayload } from "jsonwebtoken";
 import { VerifiedCallback } from "passport-jwt";
-import { getUserByID } from "@models/authUser.model";
+import { getUserByID } from "@models/user.model";
 
 const opts: StrategyOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

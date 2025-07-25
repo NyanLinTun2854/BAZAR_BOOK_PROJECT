@@ -1,6 +1,6 @@
 const CONSTANT = {
   baseEndPoint: "/v1/api",
-  adminBaseEndPoint: "v1/api/admin",
+  adminBaseEndPoint: "/v1/api/admin",
   server: {
     basePath: process.env.API_BASE_PATH,
     port: process.env.PORT,

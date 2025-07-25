@@ -5,6 +5,7 @@ import passport from "passport";
 import v1Routes from "@routes/index";
 import bodyParser from "body-parser";
 import CONSTANT from "@config/constant";
+import v1AdminRoutes from "@routes/admin";
 import PassportConfig from "@config/passport";
 import { errorMiddleware } from "@middlewares/errorMiddleware";
 
@@ -22,6 +23,7 @@ PassportConfig(passport);
 app.use(passport.initialize());
 
 app.use(CONSTANT.baseEndPoint, v1Routes);
+app.use(CONSTANT.adminBaseEndPoint, v1AdminRoutes);
 
 app.use(errorMiddleware);
 

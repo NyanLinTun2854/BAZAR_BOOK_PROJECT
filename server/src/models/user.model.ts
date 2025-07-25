@@ -1,5 +1,5 @@
-import User from "mongo/authUser.mongo";
-import { IUser, IUserWithMeta } from "@customTypes/authUser.interface";
+import User from "mongo/user.mongo";
+import { IUser, IUserWithMeta } from "@customTypes/user.interface";
 
 const getAllUsers = async (): Promise<IUser[]> => {
   return await User.find({}, { _id: 0, __v: 0 }).lean();

@@ -4,30 +4,34 @@ import { HttpError } from "@utils/helperUtil";
 import {
   ILoginServiceResp,
   IRefreshServiceResp,
-  IUser,
+  IAdmin,
   IUserFromTokenDecode,
-} from "@customTypes/user.interface";
+} from "@customTypes/adminUser.interface";
 import jwt from "jsonwebtoken";
-import { createUser, getUserByEmail, isUserExisting } from "@models/user.model";
+import {
+  createAdminUser,
+  getAdminUserByEmail,
+  isAdminUserExisting,
+} from "@models/adminUser.model";
 
 export const register = async (
   name: string,
   email: string,
   password: string
 ): Promise<void> => {
-  const isExist = await isUserExisting(email);
+  const isExist = await isAdminUserExisting(email);
   if (isExist) {
     throw new HttpError("Email already registered.", 409);
   }
 
   const hashed = await bcrypt.hash(password, CONSTANT.saltRounds);
 
-  const newUser: IUser = {
+  const newUser: IAdmin = {
     name,
     email,
     password: hashed,
   };
-  await createUser(newUser);
+  await createAdminUser(newUser);
 };
 
 export const login = async (
@@ -35,7 +39,7 @@ export const login = async (
   password: string
 ): Promise<ILoginServiceResp> => {
   // Validate User
-  const user = await getUserByEmail(email);
+  const user = await getAdminUserByEmail(email);
   if (
     !user ||
     (user.password && !(await bcrypt.compare(password, user.password)))

@@ -1,5 +1,5 @@
 import mongoose, { Model, Schema } from "mongoose";
-import { IUser } from "@customTypes/authUser.interface";
+import { IUser } from "@customTypes/user.interface";
 
 export interface IUserDocument extends IUser, Document {}
 
