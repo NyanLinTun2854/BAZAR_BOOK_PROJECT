@@ -25,7 +25,7 @@ export const register = async (
     const { name, email, password } = req.body;
     await authAdminUserService.register(name, email, password);
 
-    response = commonResponseSetup("201", null, "Successfully Register!");
+    response = commonResponseSetup("201", null, null);
     res.status(200).json(response);
   } catch (err: any) {
     next(err);
@@ -64,7 +64,7 @@ export const login = async (
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    response = commonResponseSetup("200", data, "Successfully Login!");
+    response = commonResponseSetup("200", data, null);
     res.status(200).json(response);
   } catch (err: any) {
     next(err);
@@ -101,7 +101,7 @@ export const refresh = async (
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    response = commonResponseSetup("200", data, "Successfully Refresh!");
+    response = commonResponseSetup("200", data, null);
     res.status(200).json(response);
   } catch (err: any) {
     next(err);
