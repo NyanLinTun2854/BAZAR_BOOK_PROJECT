@@ -9,23 +9,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { container } from "@/infrastructure/di/container";
-import { LoginUseCase } from "@/domain/usecases/AuthUsecases";
+import { RegisterUseCase } from "@/domain/usecases/AuthUsecases";
 
-export function LoginForm({
+export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleLogin = async () => {
+  const handleSignup = async () => {
     try {
       setLoading(true);
-      const loginUseCase = container.resolve(LoginUseCase);
-      const { accessToken } = await loginUseCase.execute(email, password);
-      toast.success("Successfully Login!");
+      const registerUseCase = container.resolve(RegisterUseCase);
+      await registerUseCase.execute(name, email, password);
+      toast.success("Successfully Register!");
     } catch (err: unknown) {
       if (err instanceof Error) {
         toast.error(err.message);
@@ -43,7 +44,7 @@ export function LoginForm({
       {...props}
       onSubmit={(e) => {
         e.preventDefault();
-        handleLogin();
+        handleSignup();
       }}
     >
       <div className="flex flex-col items-center gap-2 text-center">
@@ -53,6 +54,17 @@ export function LoginForm({
         </p>
       </div>
       <div className="grid gap-6">
+        <div className="grid gap-3">
+          <Label htmlFor="name">User Name</Label>
+          <Input
+            id="name"
+            type="name"
+            placeholder="m@example.com"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
           <Input
@@ -99,7 +111,7 @@ export function LoginForm({
           </div>
         </div>
         <Button type="submit" className="w-full">
-          Login
+          Sign up
         </Button>
         <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
           <span className="bg-background text-muted-foreground relative z-10 px-2">
@@ -113,13 +125,13 @@ export function LoginForm({
               fill="currentColor"
             />
           </svg>
-          Login with GitHub
+          Sign up with GitHub
         </Button>
       </div>
       <div className="text-center text-sm">
-        Don&apos;t have an account?{" "}
-        <Link href="/signup" className="underline underline-offset-4">
-          Sign up
+        Have an account?{" "}
+        <Link href="/login" className="underline underline-offset-4">
+          Login
         </Link>
       </div>
     </form>

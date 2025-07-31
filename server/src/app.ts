@@ -11,9 +11,18 @@ import { errorMiddleware } from "@middlewares/errorMiddleware";
 
 const app = express();
 
-app.use(helmet());
+// app.use(cors());
 
-app.use(cors());
+app.use(
+  cors({
+    origin: true, // or specify your client origins explicitly
+    credentials: true, // required when using withCredentials
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+app.use(helmet());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: "30mb" }));
