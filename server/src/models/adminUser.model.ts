@@ -1,5 +1,5 @@
 import AdminUser from "mongo/adminUser.mongo";
-import { IAdmin, IUserWithMeta } from "@customTypes/adminUser.interface";
+import { IAdmin, IAdminUserWithMeta } from "@customTypes/adminUser.interface";
 
 const getAllAdminUsers = async (): Promise<IAdmin[]> => {
   return await AdminUser.find({}, { _id: 0, __v: 0 }).lean();
@@ -9,9 +9,20 @@ const createAdminUser = async (user: IAdmin): Promise<void> => {
   await AdminUser.create(user);
 };
 
+const verifyAdminUserByEmail = async (email: string): Promise<void> => {
+  await AdminUser.updateOne({ email }, { $set: { email_verified: "1" } });
+};
+
+const updateAdminUserPassword = async (
+  email: string,
+  hashPassword: string
+): Promise<void> => {
+  await AdminUser.updateOne({ email }, { $set: { password: hashPassword } });
+};
+
 const getAdminUserByEmail = async (
   email: string
-): Promise<IUserWithMeta | null> => {
+): Promise<IAdminUserWithMeta | null> => {
   return await AdminUser.findOne({ email }).lean();
 };
 
@@ -29,4 +40,6 @@ export {
   isAdminUserExisting,
   getAdminUserByID,
   getAdminUserByEmail,
+  verifyAdminUserByEmail,
+  updateAdminUserPassword,
 };

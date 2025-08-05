@@ -4,6 +4,8 @@ import { Types } from "mongoose";
 export interface IAdmin {
   name: string;
   email: string;
+  role: string;
+  email_verified: string;
   password?: string;
 }
 
@@ -13,7 +15,7 @@ export interface IUserFromTokenDecode extends JwtPayload {
   email: string;
 }
 
-export type IUserWithMeta = IAdmin & { _id: Types.ObjectId; __v?: number };
+export type IAdminUserWithMeta = IAdmin & { _id: Types.ObjectId; __v?: number };
 
 export interface ILoginServiceResp {
   accessToken: string;

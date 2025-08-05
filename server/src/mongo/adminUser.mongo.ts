@@ -19,6 +19,14 @@ const adminUserSchema: Schema<IAdminDocument> =
         lowercase: true,
         trim: true,
       },
+      role: {
+        type: String,
+        required: true,
+      },
+      email_verified: {
+        type: String,
+        required: true,
+      },
       password: {
         type: String,
         required: true,

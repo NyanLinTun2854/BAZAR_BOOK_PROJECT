@@ -1,7 +1,10 @@
 import {
-  userLoginSchema,
-  userRegisterSchema,
-  userTokenRefreshSchema,
+  adminUserLoginSchema,
+  adminUserRegisterSchema,
+  adminUserRequestForgetPasswordEmailSchema,
+  adminUserTokenRefreshSchema,
+  adminUserVerifyForgetPasswordEmailSchema,
+  adminUserVerifyRegisterEmailSchema,
 } from "@utils/joiSchemasUtils";
 import { commonResponseSetup } from "@utils/helperUtil";
 import { NextFunction, Request, Response } from "express";
@@ -14,7 +17,7 @@ export const register = async (
 ): Promise<void> => {
   let response;
   try {
-    const { error } = userRegisterSchema.validate(req.body);
+    const { error } = adminUserRegisterSchema.validate(req.body);
 
     if (error) {
       response = commonResponseSetup("400", null, error.details[0].message);
@@ -22,10 +25,35 @@ export const register = async (
       return;
     }
 
-    const { name, email, password } = req.body;
-    await authAdminUserService.register(name, email, password);
+    const { name, email, password, role } = req.body;
+    await authAdminUserService.register(name, email, password, role);
 
     response = commonResponseSetup("201", null, null);
+    res.status(200).json(response);
+  } catch (err: any) {
+    next(err);
+  }
+};
+
+export const verifyRegisterEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  let response;
+  try {
+    const { error } = adminUserVerifyRegisterEmailSchema.validate(req.body);
+
+    if (error) {
+      response = commonResponseSetup("400", null, error.details[0].message);
+      res.status(400).json(response);
+      return;
+    }
+
+    const { email, otp } = req.body;
+    await authAdminUserService.verifyRegisterEmail(email, otp);
+
+    response = commonResponseSetup("200", null, null);
     res.status(200).json(response);
   } catch (err: any) {
     next(err);
@@ -39,7 +67,7 @@ export const login = async (
 ): Promise<void> => {
   let response;
   try {
-    const { error } = userLoginSchema.validate(req.body);
+    const { error } = adminUserLoginSchema.validate(req.body);
 
     if (error) {
       response = commonResponseSetup("400", null, error.details[0].message);
@@ -78,7 +106,7 @@ export const refresh = async (
 ): Promise<void> => {
   let response;
   try {
-    const { error } = userTokenRefreshSchema.validate(req.body);
+    const { error } = adminUserTokenRefreshSchema.validate(req.body);
 
     if (error) {
       response = commonResponseSetup("400", null, error.details[0].message);
@@ -105,5 +133,57 @@ export const refresh = async (
     res.status(200).json(response);
   } catch (err: any) {
     next(err);
+  }
+};
+
+export const requestForgetPasswordEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  let response;
+  try {
+    const { error } = adminUserRequestForgetPasswordEmailSchema.validate(
+      req.body
+    );
+
+    if (error) {
+      response = commonResponseSetup("400", null, error.details[0].message);
+      res.status(400).json(response);
+      return;
+    }
+
+    const { email } = req.body;
+
+    await authAdminUserService.requestForgetPasswordEmail(email);
+
+    response = commonResponseSetup("200", null, null);
+    res.status(200).json(response);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const verifyForgetPasswordEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  let response;
+  try {
+    let { error } = adminUserVerifyForgetPasswordEmailSchema.validate(req.body);
+
+    if (error) {
+      response = commonResponseSetup("400", null, null);
+      res.status(400).json(response);
+      return;
+    }
+
+    const { email, otp, password } = req.body;
+
+    await authAdminUserService.verifyForgetPasswordEmail(email, otp, password);
+    res.status(200).json(response);
+  } catch (error: any) {
+    next(error);
   }
 };

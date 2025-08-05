@@ -9,6 +9,7 @@ export const userRegisterSchema = Joi.object({
   }),
   email: Joi.string().email().required().messages({
     "string.email": `"email" must be a valid email`,
+    "string.empty": `"email" cannot be an empty field`,
     "any.required": `"email" is a required field`,
   }),
   password: Joi.string()
@@ -20,7 +21,7 @@ export const userRegisterSchema = Joi.object({
 });
 
 export const userLoginSchema = Joi.object({
-  email: Joi.string().required().messages({
+  email: Joi.string().email().required().messages({
     "string.email": `"email" must be a valid email`,
     "string.empty": `"email" cannot be an empty field`,
     "any.required": `"email" is a required field`,
@@ -55,6 +56,21 @@ export const adminUserRegisterSchema = Joi.object({
     .messages({
       "string.pattern.base": `"password" must be 6-30 characters and include only letters, numbers, and special characters`,
     }),
+  role: Joi.string().required().messages({
+    "string.empty": `"role" cannot be empty field`,
+    "any.required": `"role" is a required field`,
+  }),
+});
+
+export const adminUserVerifyRegisterEmailSchema = Joi.object({
+  email: Joi.string().email().required().messages({
+    "string.email": `"email" must be a valid email`,
+    "any.required": `"email" is a required field`,
+  }),
+  otp: Joi.string().required().messages({
+    "string.empty": `"otp" cannot be empty field`,
+    "any.required": `"otp" is a required field`,
+  }),
 });
 
 export const adminUserLoginSchema = Joi.object({
@@ -74,4 +90,30 @@ export const adminUserTokenRefreshSchema = Joi.object({
     "any.required": `"refresh_token" is a required field`,
     "string.empty": `"refresh_token" cannot be empty field`,
   }),
+});
+
+export const adminUserRequestForgetPasswordEmailSchema = Joi.object({
+  email: Joi.string().email().required().messages({
+    "string.email": `"email" must be a valid email`,
+    "string.empty": `"email" cannot be an empty field`,
+    "any.required": `"email" is a required field`,
+  }),
+});
+
+export const adminUserVerifyForgetPasswordEmailSchema = Joi.object({
+  email: Joi.string().email().required().messages({
+    "string.email": `"email" must be a valid email`,
+    "string.empty": `"email" cannot be an empty field`,
+    "any.required": `"email" is a required field`,
+  }),
+  otp: Joi.string().email().required().messages({
+    "string.email": `"otp" must be a valid email`,
+    "any.required": `"otp" is a required field`,
+  }),
+  password: Joi.string()
+    .pattern(/^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{6,30}$/)
+    .required()
+    .messages({
+      "string.pattern.base": `"password" must be 6-30 characters and include only letters, numbers, and special characters`,
+    }),
 });
