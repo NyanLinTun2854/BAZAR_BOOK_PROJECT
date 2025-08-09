@@ -2,12 +2,15 @@
 
 import Link from "next/link";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import CONSTANT from "@/config/constant";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { SelectInput } from "@/components/ui/select";
 import { container } from "@/infrastructure/di/container";
 import { RegisterUseCase } from "@/domain/usecases/AuthUsecases";
 
@@ -19,6 +22,7 @@ export function SignupForm({
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [role, setRole] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSignup = async () => {
@@ -74,6 +78,14 @@ export function SignupForm({
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="grid gap-3">
+          <Label htmlFor="role">Role</Label>
+          <SelectInput
+            value={role}
+            options={CONSTANT.roles}
+            onValueChange={setRole}
           />
         </div>
         <div className="grid gap-3">
